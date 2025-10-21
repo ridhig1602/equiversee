@@ -1,0 +1,154 @@
+'use client'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import toast from 'react-hot-toast'
+
+export default function LearnPage() {
+  const [selectedCategory, setSelectedCategory] = useState('beginner')
+  const [quizQuestion, setQuizQuestion] = useState('')
+
+  const categories = [
+    {
+      id: 'beginner',
+      name: 'Beginner',
+      color: 'from-green-500 to-blue-500',
+      modules: [
+        'What are Stocks?',
+        'Basic Investment Principles',
+        'Understanding Market Trends',
+        'Risk Management Fundamentals'
+      ]
+    },
+    {
+      id: 'intermediate',
+      name: 'Intermediate',
+      color: 'from-blue-500 to-purple-500',
+      modules: [
+        'Technical Analysis',
+        'Portfolio Diversification',
+        'Market Indicators',
+        'Sector Analysis'
+      ]
+    },
+    {
+      id: 'advanced',
+      name: 'Advanced',
+      color: 'from-purple-500 to-pink-500',
+      modules: [
+        'Derivatives Trading',
+        'Options Strategies',
+        'Advanced Risk Management',
+        'Algorithmic Trading Basics'
+      ]
+    }
+  ]
+
+  const generateQuiz = () => {
+    const questions = [
+      "What is the primary purpose of diversifying your investment portfolio?",
+      "Explain the difference between a stock and a bond.",
+      "How does compound interest work in long-term investing?",
+      "What factors should you consider before investing in a company?",
+      "Why is risk management important in stock market investing?"
+    ]
+    const randomQuestion = questions[Math.floor(Math.random() * questions.length)]
+    setQuizQuestion(randomQuestion)
+    toast.success('AI-generated quiz question created!')
+  }
+
+  return (
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            Learning Modules
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Progress from beginner to advanced through our structured financial education curriculum
+          </p>
+        </motion.div>
+
+        {/* Category Tabs */}
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                selectedCategory === category.id
+                  ? `bg-gradient-to-r ${category.color} text-white shadow-lg`
+                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Modules Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {categories
+            .find(cat => cat.id === selectedCategory)
+            ?.modules.map((module, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold mr-4">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">{module}</h3>
+                </div>
+                <p className="text-gray-400 mb-4">
+                  Comprehensive guide to understanding {module.toLowerCase()} with practical examples and case studies.
+                </p>
+                <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">
+                  Start Learning
+                </button>
+              </motion.div>
+            ))}
+        </div>
+
+        {/* AI Quiz Generator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8 text-center"
+        >
+          <h2 className="text-2xl font-bold text-white mb-4">AI-Powered Quiz Generator</h2>
+          <p className="text-gray-300 mb-6">
+            Get personalized quiz questions generated by AI based on your learning progress
+          </p>
+          
+          {quizQuestion && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white/5 rounded-xl p-6 mb-6 border border-white/10"
+            >
+              <h3 className="text-lg font-semibold text-white mb-2">Your AI-Generated Question:</h3>
+              <p className="text-gray-300 text-lg">{quizQuestion}</p>
+            </motion.div>
+          )}
+          
+          <button
+            onClick={generateQuiz}
+            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105"
+          >
+            🧠 Generate AI Quiz Question
+          </button>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
