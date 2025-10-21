@@ -86,7 +86,7 @@ export default function SignInPage() {
           </div>
 
           <div className="text-center">
-            <span className="text-gray-400">Don't have an account? </span>
+           <span className="text-gray-400">Don&apos;t have an account? </span>
             <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 transition-colors">
               Sign up
             </Link>

@@ -89,7 +89,7 @@ export default function TradingPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [selectedStock, setSelectedStock] = useState('')
   const [quantity, setQuantity] = useState('')
-  const [stocks, setStocks] = useState(MOCK_STOCKS)
+  const [stocks] = useState(MOCK_STOCKS)
 
   // Load user data when component mounts or user changes
   useEffect(() => {

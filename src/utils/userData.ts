@@ -52,7 +52,7 @@ export const loadUserTradingData = (userId: string): UserTradingData => {
     const data = JSON.parse(saved)
     return {
       ...data,
-      transactions: data.transactions.map((t: any) => ({
+      transactions: data.transactions.map((t: Transaction & { timestamp: string }) => ({
         ...t,
         timestamp: new Date(t.timestamp)
       }))
@@ -68,13 +68,13 @@ export const loadUserTradingData = (userId: string): UserTradingData => {
 }
 
 // Save quiz progress
-export const saveUserQuizProgress = (userId: string, progress: any) => {
+export const saveUserQuizProgress = (userId: string, progress: Record<string, unknown>) => {
   if (typeof window === 'undefined') return
   localStorage.setItem(getUserKey(userId, 'quiz_progress'), JSON.stringify(progress))
 }
 
 // Load quiz progress
-export const loadUserQuizProgress = (userId: string) => {
+export const loadUserQuizProgress = (userId: string): Record<string, unknown> => {
   if (typeof window === 'undefined') return {}
   
   const saved = localStorage.getItem(getUserKey(userId, 'quiz_progress'))
