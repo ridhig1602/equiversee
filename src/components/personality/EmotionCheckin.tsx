@@ -1,12 +1,12 @@
 'use client';
 import { useState } from 'react';
-import { personalityQuestions, calculatePersonality } from '@/lib/personalityQuiz';
+import { personalityQuestions, calculatePersonality, PersonalityResult } from '@/lib/personalityQuiz';
 
 export default function EmotionCheckin() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [showResult, setShowResult] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<PersonalityResult | null>(null);
 
   const handleAnswer = (answerIndex: number) => {
     const newAnswers = [...answers, answerIndex];
@@ -64,15 +64,6 @@ export default function EmotionCheckin() {
   }
 
   const question = personalityQuestions[currentQuestion];
-
-    if (!question || !question.options) {
-    return (
-      <div className="bg-white rounded-xl p-6 shadow-lg border text-center">
-        <h3 className="text-xl font-semibold text-red-600">Error loading questions</h3>
-        <p className="text-gray-600 mt-2">Please refresh the page and try again.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-lg border">
