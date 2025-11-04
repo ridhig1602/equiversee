@@ -39,7 +39,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            © 2024 Equiverse. Made with ❤️ for financial education.
+            © 2025 Equiverse. Made with ❤️ for financial education.
           </p>
         </div>
       </div>
