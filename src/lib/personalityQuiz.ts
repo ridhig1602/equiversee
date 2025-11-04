@@ -45,7 +45,6 @@ export function calculatePersonality(answers: number[]): PersonalityResult {
     IMPULSIVE: 0
   };
 
-  // Calculate scores
   answers.forEach((answerIndex, questionIndex) => {
     const question = personalityQuestions[questionIndex];
     const selectedOption = question.options[answerIndex];
@@ -55,7 +54,6 @@ export function calculatePersonality(answers: number[]): PersonalityResult {
     });
   });
 
-  // Find dominant personality
   const dominantType = Object.entries(scores).reduce((a, b) => a[1] > b[1] ? a : b)[0];
 
   return getPersonalityDetails(dominantType as keyof typeof scores);
@@ -64,35 +62,35 @@ export function calculatePersonality(answers: number[]): PersonalityResult {
 function getPersonalityDetails(type: 'CALM_INVESTOR' | 'RISK_LOVER' | 'OVERTHINKER' | 'ANALYTICAL' | 'IMPULSIVE'): PersonalityResult {
   const personalities = {
     CALM_INVESTOR: {
-      type: 'CALM_INVESTOR',
+      type: 'CALM_INVESTOR' as const,
       badge: '🪷 Calm Investor',
       description: 'You stay composed during market volatility',
       strengths: ['Emotional control', 'Long-term thinking', 'Patience'],
       improvements: ['Could take more calculated risks']
     },
     RISK_LOVER: {
-      type: 'RISK_LOVER', 
+      type: 'RISK_LOVER' as const,
       badge: '🎯 Risk Lover',
       description: 'You thrive on high-risk, high-reward opportunities',
       strengths: ['Quick decision making', 'High risk tolerance'],
       improvements: ['Consider risk management', 'Avoid impulsive moves']
     },
     OVERTHINKER: {
-      type: 'OVERTHINKER',
-      badge: '🤔 Overthinker', 
+      type: 'OVERTHINKER' as const,
+      badge: '🤔 Overthinker',
       description: 'You analyze every detail but sometimes hesitate',
       strengths: ['Thorough research', 'Attention to detail'],
       improvements: ['Trust your analysis', 'Avoid analysis paralysis']
     },
     ANALYTICAL: {
-      type: 'ANALYTICAL',
+      type: 'ANALYTICAL' as const,
       badge: '📊 Analytical Master',
       description: 'You make data-driven investment decisions',
       strengths: ['Strong research skills', 'Logical thinking'],
       improvements: ['Balance data with intuition']
     },
     IMPULSIVE: {
-      type: 'IMPULSIVE',
+      type: 'IMPULSIVE' as const,
       badge: '⚡ Impulsive Trader',
       description: 'You make quick decisions based on instincts',
       strengths: ['Fast execution', 'Opportunity spotting'],
