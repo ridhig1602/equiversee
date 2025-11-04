@@ -22,70 +22,61 @@ export async function getMarketMood(): Promise<MarketMood> {
     const hour = new Date().getHours();
     const random = Math.random();
     
-    // More dynamic calculation
-    let sentimentScore = 0;
-    
-    // Time-based sentiment
-    if (hour >= 9 && hour <= 15) { // Market hours
-      sentimentScore += 1;
-    }
-    
-    // Random events
-    const randomEvent = marketEvents[Math.floor(Math.random() * marketEvents.length)];
-    sentimentScore += randomEvent.impact;
-    
-    // Add some randomness
-    sentimentScore += (Math.random() - 0.5) * 2;
-    
     let sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
     let confidence = 0;
     
-    if (sentimentScore > 1) {
-      sentiment = 'BULLISH';
-      confidence = 70 + (Math.random() * 20);
-    } else if (sentimentScore < -1) {
-      sentiment = 'BEARISH';
-      confidence = 60 + (Math.random() * 25);
+    if (hour >= 9 && hour <= 15) {
+      if (random > 0.6) {
+        sentiment = 'BULLISH';
+        confidence = 70 + (random * 20);
+      } else if (random < 0.3) {
+        sentiment = 'BEARISH'; 
+        confidence = 60 + (random * 25);
+      } else {
+        sentiment = 'NEUTRAL';
+        confidence = 50 + (random * 20);
+      }
     } else {
       sentiment = 'NEUTRAL';
-      confidence = 50 + (Math.random() * 20);
+      confidence = 40 + (random * 30);
     }
     
     return getMoodDetails(sentiment, confidence);
   } catch (error) {
+    console.error('Market mood error:', error);
     return getMoodDetails('NEUTRAL', 50);
   }
 }
 
-function getMoodDetails(sentiment: string, confidence: number): MarketMood {
+function getMoodDetails(sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL', confidence: number): MarketMood {
   const moods = {
     BULLISH: {
-      sentiment: 'BULLISH',
+      sentiment: 'BULLISH' as const,
       emoji: '📈🚀',
       color: 'from-green-500 to-emerald-600',
       description: 'Market is bullish with strong momentum!',
-      trend: 'UP',
-      volatility: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM'
+      trend: 'UP' as const,
+      volatility: Math.random() > 0.5 ? 'HIGH' as const : 'MEDIUM' as const
     },
     BEARISH: {
-      sentiment: 'BEARISH', 
+      sentiment: 'BEARISH' as const,
       emoji: '📉😰',
       color: 'from-red-500 to-orange-600',
       description: 'Market is bearish with caution advised',
-      trend: 'DOWN',
-      volatility: Math.random() > 0.5 ? 'HIGH' : 'MEDIUM'
+      trend: 'DOWN' as const,
+      volatility: Math.random() > 0.5 ? 'HIGH' as const : 'MEDIUM' as const
     },
     NEUTRAL: {
-      sentiment: 'NEUTRAL',
-      emoji: '📊🤔', 
+      sentiment: 'NEUTRAL' as const,
+      emoji: '📊🤔',
       color: 'from-blue-500 to-cyan-600',
       description: 'Market is consolidating, waiting for direction',
-      trend: 'SIDEWAYS',
-      volatility: 'LOW'
+      trend: 'SIDEWAYS' as const,
+      volatility: 'LOW' as const
     }
   };
   
-  const mood = moods[sentiment as keyof typeof moods];
+  const mood = moods[sentiment];
   
   return {
     ...mood,
