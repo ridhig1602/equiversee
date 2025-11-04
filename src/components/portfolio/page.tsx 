@@ -1,0 +1,21 @@
+// app/portfolio/page.tsx - Update this file
+import StockList from '@/components/trading/StockList';
+import PortfolioSummary from '@/components/portfolio/PortfolioSummary';
+
+export default function PortfolioPage() {
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Portfolio Summary */}
+        <div className="mb-8">
+          <PortfolioSummary />
+        </div>
+        
+        {/* Stock Market */}
+        <div className="bg-white rounded-xl shadow-lg">
+          <StockList />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import toast from 'react-hot-toast'
 import { useAuth } from '@/contexts/AuthContext'
 import { saveUserTradingData, loadUserTradingData } from '@/utils/userData'
+import { TradingXP } from '@/lib/tradingXP' // ← ADDED
 
 // Helper function to avoid hydration errors
 const formatNumber = (num: number) => {
@@ -179,6 +180,10 @@ export default function TradingPage() {
     setPortfolio(newPortfolio)
     setTransactions([newTransaction, ...transactions])
     setWalletBalance(prev => prev - totalCost)
+
+    // 🎮 XP SYSTEM - Add these 2 lines
+    const xpEarned = TradingXP.awardXPForTrade('BUY', qty);
+    TradingXP.updateTradingStats();
     
     toast.success(`✅ Bought ${qty} shares of ${stock.symbol} for ₹${formatNumber(totalCost)}`)
     setQuantity('')
@@ -215,6 +220,11 @@ export default function TradingPage() {
     setPortfolio(newPortfolio)
     setTransactions([newTransaction, ...transactions])
     setWalletBalance(prev => prev + totalValue)
+
+    // 🎮 XP SYSTEM - Add these 3 lines
+    const profit = (price - portfolioItem.buyPrice) * portfolioItem.quantity;
+    const xpEarned = TradingXP.awardXPForTrade('SELL', portfolioItem.quantity, profit);
+    TradingXP.updateTradingStats();
     
     toast.success(`💰 Sold ${portfolioItem.quantity} shares of ${symbol} for ₹${formatNumber(totalValue)}`)
   }

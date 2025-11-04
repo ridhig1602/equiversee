@@ -1,14 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true
+  experimental: {
   },
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+  serverExternalPackages: [],
+  env: {
+    ALPHA_VANTAGE_API_KEY: process.env.ALPHA_VANTAGE_API_KEY,
   },
 }
 

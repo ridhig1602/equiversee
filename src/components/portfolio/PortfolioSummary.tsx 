@@ -1,0 +1,121 @@
+// components/portfolio/PortfolioSummary.tsx
+'use client';
+import { useState, useEffect } from 'react';
+import { RealStockData, getRealStockPrice } from '@/lib/stockApi';
+
+interface PortfolioItem {
+  symbol: string;
+  quantity: number;
+  avgPrice: number;
+}
+
+export default function PortfolioSummary() {
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [currentPrices, setCurrentPrices] = useState<{[key: string]: number}>({});
+  const [totalValue, setTotalValue] = useState(100000);
+  const [cash, setCash] = useState(100000);
+
+  // Load portfolio from localStorage
+  useEffect(() => {
+    const savedPortfolio = localStorage.getItem('equiverse-portfolio');
+    if (savedPortfolio) {
+      setPortfolio(JSON.parse(savedPortfolio));
+    }
+    
+    const savedCash = localStorage.getItem('equiverse-cash');
+    if (savedCash) {
+      setCash(parseFloat(savedCash));
+    }
+  }, []);
+
+  // Update current prices
+  useEffect(() => {
+    const updatePrices = async () => {
+      const prices: {[key: string]: number} = {};
+      
+      for (const item of portfolio) {
+        try {
+          const stockData = await getRealStockPrice(item.symbol);
+          prices[item.symbol] = stockData.price;
+        } catch (error) {
+          console.error(`Error fetching price for ${item.symbol}:`, error);
+        }
+      }
+      
+      setCurrentPrices(prices);
+    };
+
+    if (portfolio.length > 0) {
+      updatePrices();
+      const interval = setInterval(updatePrices, 60000); // Update every minute
+      return () => clearInterval(interval);
+    }
+  }, [portfolio]);
+
+  // Calculate total portfolio value
+  useEffect(() => {
+    const stockValue = portfolio.reduce((total, item) => {
+      const currentPrice = currentPrices[item.symbol] || item.avgPrice;
+      return total + (currentPrice * item.quantity);
+    }, 0);
+    
+    setTotalValue(stockValue + cash);
+  }, [portfolio, currentPrices, cash]);
+
+  const profitLoss = totalValue - 100000;
+
+  return (
+    <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white shadow-xl">
+      <h2 className="text-2xl font-bold mb-4">Your Portfolio</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="text-center">
+          <p className="text-blue-100">Total Value</p>
+          <p className="text-3xl font-bold">₹{totalValue.toLocaleString()}</p>
+        </div>
+        
+        <div className="text-center">
+          <p className="text-blue-100">Cash Balance</p>
+          <p className="text-3xl font-bold">₹{cash.toLocaleString()}</p>
+        </div>
+        
+        <div className="text-center">
+          <p className="text-blue-100">Profit/Loss</p>
+          <p className={`text-3xl font-bold ${profitLoss >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+            {profitLoss >= 0 ? '+' : ''}₹{profitLoss.toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Portfolio Holdings */}
+      {portfolio.length > 0 && (
+        <div className="mt-6">
+          <h3 className="font-semibold mb-3">Your Holdings</h3>
+          <div className="space-y-2">
+            {portfolio.map((item) => {
+              const currentPrice = currentPrices[item.symbol] || item.avgPrice;
+              const value = currentPrice * item.quantity;
+              const pl = (currentPrice - item.avgPrice) * item.quantity;
+              const plPercent = ((currentPrice - item.avgPrice) / item.avgPrice) * 100;
+
+              return (
+                <div key={item.symbol} className="flex justify-between items-center bg-white/20 p-3 rounded-lg">
+                  <div>
+                    <p className="font-semibold">{item.symbol}</p>
+                    <p className="text-sm opacity-80">{item.quantity} shares</p>
+                  </div>
+                  <div className="text-right">
+                    <p>₹{value.toLocaleString()}</p>
+                    <p className={`text-sm ${pl >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+                      {pl >= 0 ? '+' : ''}₹{pl.toFixed(2)} ({plPercent.toFixed(2)}%)
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

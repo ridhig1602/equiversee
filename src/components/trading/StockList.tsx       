@@ -1,0 +1,112 @@
+// components/trading/StockList.tsx
+'use client';
+import { useState, useEffect } from 'react';
+import { RealStockData, getMultipleStockPrices, popularStocks } from '@/lib/stockApi';
+
+export default function StockList() {
+  const [stocks, setStocks] = useState<RealStockData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStockData();
+    
+    // Refresh every 60 seconds
+    const interval = setInterval(loadStockData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadStockData = async () => {
+    try {
+      setLoading(true);
+      const stockData = await getMultipleStockPrices(popularStocks);
+      setStocks(stockData);
+    } catch (error) {
+      console.error('Error loading stock data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-16 bg-gray-200 rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Live Market</h2>
+        <button 
+          onClick={loadStockData}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {stocks.map((stock) => (
+          <div
+            key={stock.symbol}
+            className="bg-white p-4 rounded-lg shadow-md border hover:shadow-lg transition-shadow"
+          >
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-800">{stock.name}</h3>
+                <p className="text-sm text-gray-600">{stock.symbol}</p>
+              </div>
+              
+              <div className="text-right">
+                <p className="font-bold text-lg">₹{stock.price.toLocaleString()}</p>
+                <p className={`text-sm ${stock.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)} ({stock.changePercent})
+                </p>
+              </div>
+              
+              <div className="ml-6">
+                <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                  Buy
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+const [lastUpdated, setLastUpdated] = useState('');
+
+const loadStockData = async () => {
+  try {
+    setLoading(true);
+    const stockData = await getMultipleStockPrices(popularStocks);
+    setStocks(stockData);
+    setLastUpdated(new Date().toLocaleTimeString());
+  } catch (error) {
+    console.error('Error loading stock data:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// In your JSX, show last updated time:
+<div className="flex justify-between items-center mb-6">
+  <h2 className="text-2xl font-bold text-gray-800">Live Market</h2>
+  <div className="flex items-center gap-4">
+    <span className="text-sm text-gray-600">Updated: {lastUpdated}</span>
+    <button 
+      onClick={loadStockData}
+      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      Refresh Prices
+    </button>
+  </div>
+</div>
