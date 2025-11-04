@@ -21,7 +21,6 @@ export default function EmotionCheckin() {
       
       localStorage.setItem('investor-personality', JSON.stringify(personalityResult));
       
-      // Award XP for completing personality test
       const currentXP = parseInt(localStorage.getItem('user-xp') || '0');
       localStorage.setItem('user-xp', (currentXP + 150).toString());
     }
@@ -30,24 +29,24 @@ export default function EmotionCheckin() {
   if (showResult && result) {
     return (
       <div className="bg-white rounded-xl p-6 shadow-lg border text-center">
-        <h3 className="text-2xl font-bold mb-4">Your Investor Personality</h3>
+        <h3 className="text-2xl font-bold mb-4 text-gray-800">Your Investor Personality</h3>
         <div className="text-4xl mb-4">{result.badge}</div>
-        <p className="text-gray-600 mb-4">{result.description}</p>
+        <p className="text-gray-700 mb-4 text-lg">{result.description}</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
           <div>
-            <h4 className="font-semibold text-green-600">Strengths</h4>
-            <ul className="list-disc list-inside">
+            <h4 className="font-semibold text-green-600 text-lg">Strengths</h4>
+            <ul className="list-disc list-inside text-gray-700">
               {result.strengths.map((strength: string, i: number) => (
-                <li key={i}>{strength}</li>
+                <li key={i} className="mb-1">{strength}</li>
               ))}
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-orange-600">Improvements</h4>
-            <ul className="list-disc list-inside">
+            <h4 className="font-semibold text-orange-600 text-lg">Improvements</h4>
+            <ul className="list-disc list-inside text-gray-700">
               {result.improvements.map((improvement: string, i: number) => (
-                <li key={i}>{improvement}</li>
+                <li key={i} className="mb-1">{improvement}</li>
               ))}
             </ul>
           </div>
@@ -55,7 +54,7 @@ export default function EmotionCheckin() {
         
         <button 
           onClick={() => setShowResult(false)}
-          className="mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-lg font-semibold"
         >
           Continue Trading
         </button>
@@ -67,26 +66,28 @@ export default function EmotionCheckin() {
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-lg border">
-      <div className="text-center mb-2">
-        <span className="text-sm text-gray-500">
+      <div className="text-center mb-4">
+        <span className="text-sm text-gray-600 font-medium">
           Question {currentQuestion + 1} of {personalityQuestions.length}
         </span>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
           <div 
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className="bg-blue-600 h-3 rounded-full transition-all"
             style={{ width: `${((currentQuestion + 1) / personalityQuestions.length) * 100}%` }}
           ></div>
         </div>
       </div>
 
-      <h3 className="text-xl font-semibold mb-6 text-center">{question.question}</h3>
+      <h3 className="text-xl font-bold mb-6 text-center text-gray-800">
+        {question.question}
+      </h3>
       
       <div className="space-y-3">
         {question.options.map((option, index) => (
           <button
             key={index}
             onClick={() => handleAnswer(index)}
-            className="w-full p-4 text-left border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
+            className="w-full p-4 text-left border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors text-gray-800 font-medium text-lg"
           >
             {option.text}
           </button>
