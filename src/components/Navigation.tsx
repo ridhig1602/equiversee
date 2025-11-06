@@ -13,6 +13,7 @@ export default function Navigation() {
     { name: 'Home', href: '/' },
     { name: 'Learn', href: '/learn' },
     { name: 'Trading', href: '/trading' },
+    { name: 'AI Mentor', href: '/ai-mentor' }, // 🆕 NEW AI MENTOR LINK
     { name: 'Leaderboard', href: '/leaderboard' },
     { name: 'Mentorship', href: '/mentorship' },
   ]
